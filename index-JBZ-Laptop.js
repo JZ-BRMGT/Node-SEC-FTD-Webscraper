@@ -7,7 +7,6 @@ const path = require('path');
 const fs = require('fs');
 
 
-
 // File Drop Dir
 const download_path = path.resolve(__dirname, 'downloads');
 // Quickly opening SEC FTD Data
@@ -18,7 +17,7 @@ async function main() {
     });
 
     const page = await browser.newPage();
-    await page.send('Page.setDownloadBehavior', {
+    await page._client.send('Page.setDownloadBehavior', {
         behavior: 'allow',
         userDataDir: './',
         downloadPath: download_path,
