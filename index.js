@@ -5,77 +5,56 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
+const {sleep} = require("./commonFunctions");
 
+//devlogin = require('./devlogin');
 
 
 // File Drop Dir
 const download_path = path.resolve(__dirname, 'downloads');
 // Quickly opening SEC FTD Data
 
+
+const runVersion = "Dev"
+
+
 async function main() {
-    const browser = await puppeteer.launch({headless: false,
-        args: [ '--ignore-certificate-errors' ]
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: ['--ignore-certificate-errors']
     });
 
     const page = await browser.newPage();
+    /*
+    //Adjusting download location of files
     await page.send('Page.setDownloadBehavior', {
         behavior: 'allow',
         userDataDir: './',
         downloadPath: download_path,
     });
 
+     */
+
 
     //console.table(symList)
-    const runVersion = "Dev"
-    if (runVersion === "Dev") {
-        console.log("Starting Dev Login...")
 
-        await devLogin(page, runVersion, credentials)
-        await sleep(2000);
-        //await keypress("Completed Login. Press any key to continue........")
-        // Await loggin Then
+    //await keypress("Completed Login. Press any key to continue........")
+    // Await loggin Then
 
 
-        for (let i = 1; i < symList.length; i++) {
-            UrlCombined = UrlBase + symList[i] + UrlExtension;
-            console.log("#", i, " Running ", symList[i], " @ " + nowTimeAsString())
-            const response = await holdingsDownload(page, UrlCombined)
-            await sleep(3000);
-            if (response === true) {
-                console.log("W Downloaded Data Complete @ " + nowTimeAsString())
-                const updateQuery = "UPDATE public.figi_sym_meta SET is_etf_queryable=TRUE, etf_holdings_last_updated_at = '" + nowTimeAsString() + "'   WHERE figi = '" + figiList[i] + "';"
-
-                client.query(updateQuery, (err, res) => {
-                    if (err) {
-                        // console.error(err);
-                    } else if (res) {
-                        console.log('Successfully marked : ', symList[i], ' as alive!')
-                    }
-                });
-            } else if (response === false) {
-                console.log("Dead SYM " + nowTimeAsString())
-                const updateQuery = "UPDATE public.figi_sym_meta SET is_etf_queryable=FALSE, etf_holdings_last_updated_at = '" + nowTimeAsString() + "'   WHERE figi = '" + figiList[i] + "';"
-                client.query(updateQuery, (err, res) => {
-                    if (err) {
-                        // console.error(err);
-                    } else if (res) {
-                        console.log('Successfully Updated : ', symList[i], ' to DEAD!')
-                    }
-                });
+    await page.goto('https://www.sec.gov/data/foiadocsfailsdatahtm').then((page) => {
+        console.log(page.json());
 
 
-            }
-            console.log("")
-            console.log("")
+        let i = 1;
+        while (i === 1) {
 
-            // console.log(response)
         }
+    });
 
 
-    } else {
-        await devLogin(page, runVersion, credentials)
-        await sleep(5000);
-    }
+    await sleep(2000);
+
 
 }
 
